@@ -1,12 +1,10 @@
 [package]
-name = "game"
+name = "game_camera"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
 avian3d = "0.1.0"
 bevy = { version = "0.14.0", features = ["dynamic_linking"] }
-game_camera = { version = "0.1.0", path = "../game_camera" }
-game_character = { version = "0.1.0", path = "../game_character" }
 serde = "1.0.203"
 
