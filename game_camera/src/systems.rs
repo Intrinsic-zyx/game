@@ -39,7 +39,6 @@ pub(crate) fn mouse_moves_camera_system(
     window_query: Query<&Window, With<PrimaryWindow>>,
     mut mouse_motion_reader: EventReader<MouseMotion>,
     mouse_button_input: Res<ButtonInput<MouseButton>>,
-    time: Res<Time>,
 ) {
     let Ok((mut camera_transform, camera_settings, camera_zoom)) = camera_query.get_single_mut()
     else {
@@ -51,7 +50,6 @@ pub(crate) fn mouse_moves_camera_system(
     let Ok(primary_window) = window_query.get_single() else {
         return;
     };
-    let delta_time = time.delta_seconds();
     let (yaw, pitch): (f32, f32) = {
         let window_scale = primary_window.height().min(primary_window.width());
         let delta = match mouse_button_input.pressed(MouseButton::Right) {

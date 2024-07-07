@@ -1,36 +1,46 @@
 use avian3d::prelude::{Collider, RigidBody};
 use bevy::color::palettes::basic::SILVER;
+use bevy::core_pipeline::auto_exposure::AutoExposureSettings;
 use bevy::core_pipeline::bloom::BloomSettings;
+use bevy::pbr::{VolumetricFogSettings, VolumetricLight};
 use bevy::prelude::*;
-use game_camera::{CameraFocus, CameraSettings, PrimaryCamera};
+use game_camera::{CameraSettings, PrimaryCamera};
+use game_character::SpawnCharacter;
 
 pub fn setup(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
-    // mut spawn_character_writer: EventWriter<SpawnCharacter>,
+    mut spawn_character_writer: EventWriter<SpawnCharacter>,
 ) {
     commands.spawn((
         Camera3dBundle {
             transform: Transform::from_xyz(0.0, 7.0, 14.0)
                 .looking_at(Vec3::new(0.0, 1.0, 0.0), Vec3::Y),
+            // tonemapping: Tonemapping::TonyMcMapface,
             ..default()
         },
         CameraSettings::default(),
         BloomSettings::default(),
+        VolumetricFogSettings::default(),
+        FogSettings::default(),
+        AutoExposureSettings::default(),
         PrimaryCamera,
     ));
 
-    commands.spawn(PointLightBundle {
-        point_light: PointLight {
-            color: Color::WHITE,
-            intensity: 1_000_000.0,
-            shadows_enabled: true,
+    commands.spawn((
+        DirectionalLightBundle {
+            directional_light: DirectionalLight {
+                color: Color::WHITE,
+                shadows_enabled: true,
+                ..default()
+            },
+            transform: Transform::from_xyz(100.0, 100.0, 100.0).looking_at(Vec3::ZERO, Vec3::Y),
             ..default()
         },
-        transform: Transform::from_xyz(0.0, 10.0, 0.0),
-        ..default()
-    });
+        ShowLightGizmo::default(),
+        VolumetricLight::default(),
+    ));
 
     commands.spawn((
         PbrBundle {
@@ -43,19 +53,8 @@ pub fn setup(
         Collider::cuboid(50.0, 0.002, 50.0),
     ));
 
-    commands.spawn((
-        PbrBundle {
-            mesh: meshes.add(Capsule3d::new(1.0, 2.0).mesh()),
-            transform: Transform::from_xyz(0.0, 10.0, 0.0),
-            ..default()
-        },
-        RigidBody::Dynamic,
-        Collider::capsule(1.0, 2.0),
-        CameraFocus,
-    ));
-
-    // spawn_character_writer.send(SpawnCharacter {
-    //     player: true,
-    //     position: Vec3::new(0.0, 10.0, 0.0),
-    // });
+    spawn_character_writer.send(SpawnCharacter {
+        player: true,
+        position: Vec3::new(0.0, 10.0, 0.0),
+    });
 }

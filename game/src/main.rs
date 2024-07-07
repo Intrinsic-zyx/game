@@ -1,11 +1,12 @@
+mod plugin;
 mod setup;
 
+use crate::plugin::GamePlugins;
 use crate::setup::setup;
-use avian3d::PhysicsPlugins;
+use bevy::color::palettes::css::SKY_BLUE;
 use bevy::log::LogPlugin;
 use bevy::prelude::*;
 use bevy::window::PresentMode;
-use game_camera::CameraPlugin;
 
 fn main() {
     let mut app = App::new();
@@ -25,9 +26,9 @@ fn main() {
                 ..default()
             }),
     )
-    .add_plugins(PhysicsPlugins::default());
+    .add_plugins(GamePlugins);
 
-    app.add_plugins(CameraPlugin);
+    app.insert_resource(ClearColor(Color::from(SKY_BLUE)));
 
     app.add_systems(Startup, setup);
 
