@@ -1,41 +1,21 @@
-use crate::systems::{
-    apply_character_movement_dampening_system, focus_on_player_system,
-    player_character_movement_system, player_keyboard_input_system, spawn_characters_system,
-    update_character_grounded_system,
-};
+use crate::character::CharacterPlugin;
+use crate::player::PlayerPlugin;
+use bevy::app::PluginGroupBuilder;
 use bevy::prelude::*;
 
-mod components;
-mod systems;
+pub use character::*;
+pub use player::*;
 
-pub use components::*;
+mod character;
+mod player;
 
-pub struct CharacterPlugin;
+pub struct CharacterPlugins;
 
-impl Plugin for CharacterPlugin {
-    fn build(&self, app: &mut App) {
-        app.register_type::<Player>()
-            .register_type::<Character>()
-            .register_type::<Grounded>()
-            .register_type::<MovementSpeed>()
-            .register_type::<MovementDamping>()
-            .register_type::<JumpImpulse>()
-            .register_type::<MaxSlopeAngle>();
+impl PluginGroup for CharacterPlugins {
+    fn build(self) -> PluginGroupBuilder {
+        let mut builder = PluginGroupBuilder::start::<Self>();
+        builder = builder.add(CharacterPlugin).add(PlayerPlugin);
 
-        app.add_event::<MovementAction>()
-            .add_event::<SpawnCharacter>();
-
-        app.add_systems(Update, player_keyboard_input_system)
-            .add_systems(
-                Update,
-                (
-                    spawn_characters_system,
-                    focus_on_player_system,
-                    player_character_movement_system,
-                    apply_character_movement_dampening_system,
-                    update_character_grounded_system,
-                )
-                    .chain(),
-            );
+        builder
     }
 }

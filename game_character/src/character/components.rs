@@ -4,8 +4,8 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Event, Serialize, Deserialize, Reflect)]
 pub enum MovementAction {
-    Move(Vec3),
-    Jump,
+    Move { direction: Vec3, entity: Entity },
+    Jump { entity: Entity },
 }
 
 #[derive(Event, Reflect)]
@@ -13,10 +13,6 @@ pub struct SpawnCharacter {
     pub position: Vec3,
     pub player: bool,
 }
-
-#[derive(Component, Serialize, Deserialize, Reflect, Default)]
-pub struct Player;
-
 #[derive(Component, Serialize, Deserialize, Reflect, Default)]
 pub struct Character;
 

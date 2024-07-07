@@ -2,7 +2,7 @@ use avian3d::PhysicsPlugins;
 use bevy::app::PluginGroupBuilder;
 use bevy::prelude::*;
 use game_camera::CameraPlugin;
-use game_character::CharacterPlugin;
+use game_character::CharacterPlugins;
 use game_debug::DebugPlugins;
 use game_scene::ScenePlugins;
 
@@ -14,9 +14,10 @@ impl PluginGroup for GamePlugins {
         group = group
             .add_group(PhysicsPlugins::default())
             .add_group(DebugPlugins)
-            .add_group(ScenePlugins);
+            .add_group(ScenePlugins)
+            .add_group(CharacterPlugins);
 
-        group = group.add(CameraPlugin).add(CharacterPlugin);
+        group = group.add(CameraPlugin);
 
         group
     }

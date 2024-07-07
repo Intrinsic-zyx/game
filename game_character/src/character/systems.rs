@@ -1,35 +1,11 @@
-use crate::components::{
-    Character, CharacterBundle, Grounded, JumpImpulse, MaxSlopeAngle, MovementAction,
-    MovementDamping, MovementSpeed, Player, SpawnCharacter,
+use crate::character::{
+    Character, Grounded, JumpImpulse, MaxSlopeAngle, MovementAction, MovementSpeed, MovementDamping
 };
-use avian3d::prelude::{Collider, LinearVelocity, ShapeHits};
+use crate::player::Player;
+use avian3d::prelude::*;
 use bevy::prelude::*;
-use game_camera::{CameraFocus, PrimaryCamera};
-
-pub(crate) fn player_keyboard_input_system(
-    mut movement_event_writer: EventWriter<MovementAction>,
-    keyboard_input: Res<ButtonInput<KeyCode>>,
-) {
-    let up = keyboard_input.any_pressed([KeyCode::KeyW, KeyCode::ArrowUp]);
-    let down = keyboard_input.any_pressed([KeyCode::KeyS, KeyCode::ArrowDown]);
-    let left = keyboard_input.any_pressed([KeyCode::KeyA, KeyCode::ArrowLeft]);
-    let right = keyboard_input.any_pressed([KeyCode::KeyD, KeyCode::ArrowRight]);
-
-    let direction: Vec3 = {
-        let horizontal = right as i8 - left as i8;
-        let vertical = down as i8 - up as i8;
-        let direction = Vec3::new(horizontal as f32, 0.0, vertical as f32);
-        direction.normalize_or_zero()
-    };
-
-    if direction != Vec3::ZERO {
-        movement_event_writer.send(MovementAction::Move(direction));
-    }
-
-    if keyboard_input.just_pressed(KeyCode::Space) {
-        movement_event_writer.send(MovementAction::Jump);
-    }
-}
+use game_camera::PrimaryCamera;
+use crate::{CharacterBundle, SpawnCharacter};
 
 pub(crate) fn update_character_grounded_system(
     mut commands: Commands,
@@ -61,16 +37,17 @@ pub(crate) fn update_character_grounded_system(
 }
 
 #[allow(clippy::type_complexity)]
-pub(crate) fn player_character_movement_system(
+pub(crate) fn character_movement_system(
     mut movement_action_reader: EventReader<MovementAction>,
-    mut movement_query: Query<
+    mut character_query: Query<
         (
+            Entity,
             &MovementSpeed,
             &JumpImpulse,
             &mut LinearVelocity,
             Has<Grounded>,
         ),
-        With<Player>,
+        With<Character>,
     >,
     camera_query: Query<&Transform, With<PrimaryCamera>>,
     time: Res<Time>,
@@ -79,22 +56,27 @@ pub(crate) fn player_character_movement_system(
     let Ok(camera_transform) = camera_query.get_single() else {
         return;
     };
-    let Ok((movement_speed, jump_impulse, mut linear_velocity, is_grounded)) =
-        movement_query.get_single_mut()
-    else {
-        return;
-    };
     for event in movement_action_reader.read() {
-        match event {
-            MovementAction::Move(direction) => {
-                let matrix = Mat3::from_quat(camera_transform.rotation);
-                let desired = matrix.mul_vec3(*direction) * movement_speed.0 * delta_time;
-                linear_velocity.x += desired.x;
-                linear_velocity.z += desired.z;
-            }
-            MovementAction::Jump => {
-                if is_grounded {
-                    linear_velocity.y = jump_impulse.0;
+        for (character_entity, movement_speed, jump_impulse, mut linear_velocity, is_grounded) in
+            &mut character_query
+        {
+            match event {
+                MovementAction::Move { direction, entity } => {
+                    if *entity != character_entity {
+                        continue;
+                    }
+                    let matrix = Mat3::from_quat(camera_transform.rotation);
+                    let desired = matrix.mul_vec3(*direction) * movement_speed.0 * delta_time;
+                    linear_velocity.x += desired.x;
+                    linear_velocity.z += desired.z;
+                }
+                MovementAction::Jump { entity } => {
+                    if *entity != character_entity {
+                        continue;
+                    }
+                    if is_grounded {
+                        linear_velocity.y = jump_impulse.0;
+                    }
                 }
             }
         }
@@ -141,15 +123,4 @@ pub(crate) fn spawn_characters_system(
             entity.insert(Player);
         }
     }
-}
-
-pub(crate) fn focus_on_player_system(
-    player_query: Query<Entity, Added<Player>>,
-    mut commands: Commands,
-) {
-    let Ok(entity) = player_query.get_single() else {
-        return;
-    };
-    let mut player = commands.entity(entity);
-    player.insert(CameraFocus);
 }
