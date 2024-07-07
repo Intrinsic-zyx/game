@@ -35,4 +35,9 @@ pub fn setup(
         player: true,
         position: Vec3::new(0.0, 10.0, 0.0),
     });
+
+    spawn_character_writer.send(SpawnCharacter {
+        player: false,
+        position: Vec3::new(5.0, 5.0, 0.0),
+    });
 }

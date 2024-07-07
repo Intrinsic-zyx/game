@@ -1,11 +1,11 @@
 use crate::character::{
-    Character, Grounded, JumpImpulse, MaxSlopeAngle, MovementAction, MovementSpeed, MovementDamping
+    Character, Grounded, JumpImpulse, MaxSlopeAngle, MovementAction, MovementDamping, MovementSpeed,
 };
 use crate::player::Player;
+use crate::{CharacterBundle, SpawnCharacter};
 use avian3d::prelude::*;
 use bevy::prelude::*;
 use game_camera::PrimaryCamera;
-use crate::{CharacterBundle, SpawnCharacter};
 
 pub(crate) fn update_character_grounded_system(
     mut commands: Commands,
