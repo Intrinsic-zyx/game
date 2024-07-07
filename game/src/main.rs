@@ -22,14 +22,13 @@ fn main() {
                 ..default()
             })
             .set(LogPlugin {
-                filter: "wgpu=off,game=debug".into(),
+                filter: "wgpu=off,game=debug,game_camera=debug,game_character=debug,game_camera=debug,game_debug=debug".into(),
                 ..default()
             }),
     )
     .add_plugins(GamePlugins);
 
     app.insert_resource(ClearColor(Color::from(SKY_BLUE)));
-
     app.add_systems(Startup, setup);
 
     app.run();

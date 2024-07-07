@@ -4,6 +4,7 @@ use bevy::core_pipeline::auto_exposure::AutoExposurePlugin;
 use bevy::prelude::*;
 use game_camera::CameraPlugin;
 use game_character::CharacterPlugin;
+use game_debug::DebugPlugins;
 
 pub struct GamePlugins;
 
@@ -12,6 +13,9 @@ impl PluginGroup for GamePlugins {
         let mut group = PluginGroupBuilder::start::<Self>();
         group = group
             .add_group(PhysicsPlugins::default())
+            .add_group(DebugPlugins);
+
+        group = group
             .add(AutoExposurePlugin)
             .add(CameraPlugin)
             .add(CharacterPlugin);

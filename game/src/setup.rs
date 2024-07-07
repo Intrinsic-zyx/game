@@ -17,13 +17,12 @@ pub fn setup(
         Camera3dBundle {
             transform: Transform::from_xyz(0.0, 7.0, 14.0)
                 .looking_at(Vec3::new(0.0, 1.0, 0.0), Vec3::Y),
-            // tonemapping: Tonemapping::TonyMcMapface,
             ..default()
         },
         CameraSettings::default(),
         BloomSettings::default(),
         VolumetricFogSettings::default(),
-        FogSettings::default(),
+        // FogSettings::default(),
         AutoExposureSettings::default(),
         PrimaryCamera,
     ));
