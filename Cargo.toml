@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["game", "game_camera", "game_character", "game_debug"]
+members = ["game", "game_assets", "game_camera", "game_character", "game_debug", "game_scene"]
 
 [profile.dev]
 opt-level = 1

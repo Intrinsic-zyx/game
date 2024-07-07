@@ -1,8 +1,5 @@
 use avian3d::prelude::{Collider, RigidBody};
 use bevy::color::palettes::basic::SILVER;
-use bevy::core_pipeline::auto_exposure::AutoExposureSettings;
-use bevy::core_pipeline::bloom::BloomSettings;
-use bevy::pbr::{VolumetricFogSettings, VolumetricLight};
 use bevy::prelude::*;
 use game_camera::{CameraSettings, PrimaryCamera};
 use game_character::SpawnCharacter;
@@ -20,25 +17,7 @@ pub fn setup(
             ..default()
         },
         CameraSettings::default(),
-        BloomSettings::default(),
-        VolumetricFogSettings::default(),
-        // FogSettings::default(),
-        AutoExposureSettings::default(),
         PrimaryCamera,
-    ));
-
-    commands.spawn((
-        DirectionalLightBundle {
-            directional_light: DirectionalLight {
-                color: Color::WHITE,
-                shadows_enabled: true,
-                ..default()
-            },
-            transform: Transform::from_xyz(100.0, 100.0, 100.0).looking_at(Vec3::ZERO, Vec3::Y),
-            ..default()
-        },
-        ShowLightGizmo::default(),
-        VolumetricLight::default(),
     ));
 
     commands.spawn((

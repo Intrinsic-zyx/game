@@ -1902,9 +1902,20 @@ version = "0.1.0"
 dependencies = [
  "avian3d",
  "bevy",
+ "game_assets",
  "game_camera",
  "game_character",
  "game_debug",
+ "game_scene",
+ "serde",
+]
+
+[[package]]
+name = "game_assets"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "ron",
  "serde",
 ]
 
@@ -1933,6 +1944,15 @@ version = "0.1.0"
 dependencies = [
  "avian3d",
  "bevy",
+]
+
+[[package]]
+name = "game_scene"
+version = "0.1.0"
+dependencies = [
+ "avian3d",
+ "bevy",
+ "game_camera",
 ]
 
 [[package]]
