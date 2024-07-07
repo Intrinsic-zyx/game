@@ -2,7 +2,7 @@ use avian3d::prelude::{Collider, RigidBody};
 use bevy::color::palettes::basic::SILVER;
 use bevy::prelude::*;
 use game_camera::{CameraSettings, PrimaryCamera};
-use game_character::SpawnCharacter;
+use game_character::{Character, MovementAction, Player, SpawnCharacter};
 
 pub fn setup(
     mut commands: Commands,
@@ -41,3 +41,5 @@ pub fn setup(
         position: Vec3::new(5.0, 5.0, 0.0),
     });
 }
+
+

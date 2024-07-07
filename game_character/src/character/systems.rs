@@ -108,17 +108,6 @@ pub(crate) fn spawn_characters_system(
                 ..default()
             },
         ));
-        entity.with_children(move |builder| {
-            builder.spawn(PointLightBundle {
-                point_light: PointLight {
-                    intensity: 10_000.0,
-                    range: 10.0,
-                    shadows_enabled: true,
-                    ..default()
-                },
-                ..default()
-            });
-        });
         if event.player {
             entity.insert(Player);
         }
